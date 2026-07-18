@@ -11,7 +11,6 @@ const userSchema = new Schema(
     bio: { type: String, maxlength: 160 },
     website: {
       type: String,
-      required: true,
       trim: true,
       lowercase: true,
       match: [
@@ -19,7 +18,7 @@ const userSchema = new Schema(
         "Please fill a valid URL address",
       ],
     },
-    location: { type: String, required: true, trim: true },
+    location: { type: String, trim: true },
     dob: { type: Date, required: true },
     profilePic: { type: String, default: "" },
     bannerPic: { type: String, default: "" },
