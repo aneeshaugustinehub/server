@@ -7,7 +7,7 @@ const tweets = new Schema(
       // Id: {type: String, required: true, unique: true, trim: true},
       createdAt: {type: Date, default: Date.now},
       postedBy: {type: String, required: true, trim: true},
-      description: {type: String, required: true, maxlength: 280},
+      description: {type: String, required: false, maxlength: 280},
       imagePath: {type: String, trim: true},
       likeCount: {type: Number, default: 0},
       commentCount: {type: Number, default: 0},

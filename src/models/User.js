@@ -1,27 +1,39 @@
-import mongoose from 'mongoose';
-const {Schema} = mongoose;
+import mongoose from "mongoose";
+const { Schema } = mongoose;
 
 // 1. Define the Schema
 const userSchema = new Schema(
-    {
-      userId: {type: String, required: true, unique: true, trim: true},
-      createdAt: {type: Date, default: Date.now},
-      name: {type: String, required: true, trim: true},
-      email: {type: String, required: true, unique: true, lowercase: true},
-      bio: {type: String, maxlength: 160},
-      noTweets: {type: Number, default: 0},
-      noFollowers: {type: Number, default: 0},
-      noFollowing: {type: Number, default: 0},
-      age: {type: Number, min: 18, max: 65},
-      roles: {type: [String], default: ['user']},
-      token: {type: String, required: true},
+  {
+    createdAt: { type: Date, default: Date.now },
+    userId: { type: String, required: true, unique: true, trim: true },
+    name: { type: String, required: true, trim: true },
+    email: { type: String, required: true, unique: true, lowercase: true },
+    bio: { type: String, maxlength: 160 },
+    website: {
+      type: String,
+      required: true,
+      trim: true,
+      lowercase: true,
+      match: [
+        /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)$/,
+        "Please fill a valid URL address",
+      ],
     },
-    {
-      timestamps:
-          true  // Automatically creates 'createdAt' and 'updatedAt' fields
-    });
+    location: { type: String, required: true, trim: true },
+    dob: { type: Date, required: true },
+    profilePic: { type: String, default: "" },
+    bannerPic: { type: String, default: "" },
+    noTweets: { type: Number, default: 0 },
+    noFollowers: { type: Number, default: 0 },
+    noFollowing: { type: Number, default: 0 },
+    roles: { type: [String], default: ["user"] },
+    token: { type: String, required: true },
+  },
+  {
+    timestamps: true,
+  },
+);
 
-// 2. Compile the Schema into a Model
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model("User", userSchema);
 
 export default User;

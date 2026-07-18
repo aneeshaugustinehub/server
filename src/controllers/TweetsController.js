@@ -1,31 +1,35 @@
-import Tweets from '../models/Tweets.js'
-
+import { log } from "console";
+import Tweets from "../models/Tweets.js";
+import fs from "node:fs/promises";
+import path from "path";
+import { fileURLToPath } from "url";
 
 export async function getAllTweets(_, res) {
   try {
-    const tweets = await Tweets.find().sort({createdAt: -1})
-    res.status(200).json({tweets})
+    const tweets = await Tweets.find().sort({ createdAt: -1 });
+    res.status(200).json({ tweets });
     if (!tweets) {
-      res.status(404).json({message: 'tweets not available'})
+      res.status(404).json({ message: "tweets not available" });
     }
   } catch (error) {
-    console.error('error in getAllTweets', error)
-    res.status(500).json({message: 'internal server error'})
+    console.error("error in getAllTweets", error);
+    res.status(500).json({ message: "internal server error" });
   }
 }
 export async function getTweet(req, res) {
   try {
-    const id = req.params.id
-    const tweets = await Tweets.findOne({postedBy: id})
-    res.status(200).json({tweets})
+    const id = req.params.id;
+    const tweets = await Tweets.findOne({ postedBy: id });
+    res.status(200).json({ tweets });
     if (!tweets) {
-      res.status(404).json({message: 'tweets not available'})
+      return res.status(404).json({ message: "tweets not available" });
     }
   } catch (error) {
-    console.error('error in getTweet', error)
-    res.status(500).json({message: 'internal server error'})
+    console.error("error in getTweet", error);
+    res.status(500).json({ message: "internal server error" });
   }
 }
+
 // Security Note on req.params.id: Pulling the postedBy ID from the URL
 // parameters (e.g., /users/:id/tweets) works, but if you have authentication
 // set up, it is generally safer to pull the ID from the authenticated user's
@@ -35,47 +39,85 @@ export async function getTweet(req, res) {
 // perfectly fine for testing!
 
 export async function createTweet(req, res) {
+  console.log("createTweet");
   try {
-    const postedBy = req.params.id
-    const {description, imagePath} = req.body
-    if (!description && !imagePath) {
-      return res.status(400).json(
-          {message: 'Tweet description or image is required.'});
+    const postedBy = req.params.id;
+    const { Description, imagePath } = req.body;
+    // console.log(imageUrl,Description,imagePath);
+    // console.log(req.body,"res");
+    let imageUrl = "";
+    if (!Description && !req.file) {
+      return res
+        .status(400)
+        .json({ message: "Tweet description or image is required." });
     }
-    const newTweet = new Tweets({postedBy, description, imagePath});
-    await newTweet.save()
-    res.status(200).json(newTweet)
+    if (req.file) {
+      // console.log(req.file,"file");
+      imageUrl = `${req.file.filename}`;
+    }
+    // console.log("tweet created", postedBy, Description, imageUrl);
+    const newTweet = new Tweets({
+      postedBy: postedBy,
+      description: Description,
+      imagePath: imageUrl,
+    });
+    await newTweet.save();
+    res.status(200).json(newTweet);
   } catch (error) {
-    console.error('error in createTweet', error)
-    res.status(500).json({message: 'internal server error'})
+    console.error("error in createTweet", error);
+    res.status(500).json({ message: "internal server error" });
   }
 }
 export async function updateTweet(req, res) {
+  console.log("updateTweet");
   try {
-    const postedBy = req.params.id
-    const {description, imagePath} = req.body
+    const postedBy = req.params.id;
+    const { Description, imagePath } = req.body;
     if (!description && !imagePath) {
-      return res.status(400).json(
-          {message: 'Tweet description or image is required.'});
+      return res
+        .status(400)
+        .json({ message: "Tweet description or image is required." });
     }
     const updateTweet = await Tweets.findByIdAndUpdate(
-        req.params.id, {postedBy, description, imagePath}, {new: true});
-      res.status(200).json(updateTweet)
-      if (!updateTweet) {
-      return res.status(404).json({message: 'Tweet not found'})
-      }
+      req.params.id,
+      { postedBy, description, imagePath },
+      { new: true },
+    );
+    res.status(200).json(updateTweet);
+    if (!updateTweet) {
+      return res.status(404).json({ message: "Tweet not found" });
+    }
   } catch (error) {
-    console.error('error in updateTweet', error)
-    res.status(500).json({message: 'internal server error'})
+    console.error("error in updateTweet", error);
+    res.status(500).json({ message: "internal server error" });
   }
 }
+
+const uploadsDir = path.join(process.cwd(), "uploads");
+
 export async function deleteTweet(req, res) {
+  console.log("deleteTweet");
+
   try {
-    const DeleteTweet = await Tweets.findByIdAndDelete(req.params.id)
-    if (!DeleteTweet) return res.status(404).json({message: 'Tweet not found'})
-    res.status(200).json({message: 'Tweet deleted'})
+    const DeleteTweet = await Tweets.findByIdAndDelete(req.params.id);
+
+    if (!DeleteTweet)
+      return res.status(404).json({ message: "Tweet not found" });
+
+    if (DeleteTweet.imagePath) {
+      const filename = path.basename(DeleteTweet.imagePath);
+      const filePath = path.join(uploadsDir, filename);
+
+      try {
+        await fs.unlink(filePath);
+        console.log("File deleted successfully");
+      } catch (unlinkErr) {
+        console.error("Could not delete image file:", unlinkErr.message);
+      }
+    }
+    res.status(200).json({ message: "Tweet deleted" });
   } catch (error) {
-    console.error('error in deleteTweet', error)
-    res.status(500).json({message: 'internal server error'})
+    console.error("error in deleteTweet", error);
+    res.status(500).json({ message: "internal server error" });
   }
 }
