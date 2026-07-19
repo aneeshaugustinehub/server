@@ -15,8 +15,8 @@ const __dirname = dirname(__filename);
 const app = express();
 app.use(cors())
 
-
 const PORT = process.env.PORT || 3000;
+
 app.use(express.json());
 app.use('/users', userRouter);
 app.use('/tweets', TweetsRouter);

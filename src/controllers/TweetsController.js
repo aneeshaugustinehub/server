@@ -3,6 +3,7 @@ import Tweets from "../models/Tweets.js";
 import fs from "node:fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
+import { error } from "node:console";
 
 export async function getAllTweets(_, res) {
   try {
@@ -20,13 +21,27 @@ export async function getTweet(req, res) {
   try {
     const id = req.params.id;
     const tweets = await Tweets.findOne({ postedBy: id });
-    res.status(200).json({ tweets });
+    return res.status(200).json({ tweets });
     if (!tweets) {
       return res.status(404).json({ message: "tweets not available" });
     }
   } catch (error) {
     console.error("error in getTweet", error);
-    res.status(500).json({ message: "internal server error" });
+    return res.status(500).json({ message: "internal server error" });
+  }
+}
+
+export async function getTweetByUser(req, res) {
+  try {
+    const id = req.params.id;
+    const tweets = await Tweets.find({ postedBy: id }).sort({ createdAt: -1 });
+    if (!tweets) {
+      return res.status(404).json({ message: "tweets not available" });
+    }
+    return res.status(200).json({ tweets });
+  } catch (error) {
+    console.error("error in getTweet", error);
+    return res.status(500).json({ message: "internal server error" });
   }
 }
 
