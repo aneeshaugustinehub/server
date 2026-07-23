@@ -108,7 +108,7 @@ export async function updateTweet(req, res) {
   }
 }
 
-const uploadsDir = path.join(process.cwd(), "uploads");
+const uploadsDir = path.join(process.cwd(), "assets/tweetsImage");
 
 export async function deleteTweet(req, res) {
   console.log("deleteTweet");

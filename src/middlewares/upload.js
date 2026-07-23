@@ -24,11 +24,12 @@ const upload = multer({
     if (
       file.mimetype === "image/jpeg" ||
       file.mimetype === "image/png" ||
+      file.mimetype === "image/avif" ||
       file.mimetype === "image/webp"
     ) {
       cb(null, true);
     } else {
-      cb(new Error("Only .jpeg, .png, and .webp formats are allowed!"), false);
+      cb(new Error("Only .jpeg, .png, .avif, and .webp formats are allowed!"), false);
     }
   },
 });
