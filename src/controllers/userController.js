@@ -17,6 +17,22 @@ export async function getUser(req, res) {
     res.status(500).json({ message: "internal server error" });
   }
 }
+export async function getUserById(req, res) {
+  try {
+    const Id = req.params.id;
+    const user = await User.findById(Id);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: `User with ID '' not found.`,
+      });
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    console.error("error in getUser", error);
+    res.status(500).json({ message: "internal server error" });
+  }
+}
 export async function getUsers(_, res) {
   try {
     const user = await User.find();

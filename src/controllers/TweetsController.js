@@ -20,8 +20,10 @@ export async function getAllTweets(_, res) {
 export async function getTweet(req, res) {
   try {
     const id = req.params.id;
-    const tweets = await Tweets.findOne({ postedBy: id });
+    const tweets = await Tweets.findById(id);
     return res.status(200).json({ tweets });
+    console.log(res);
+    
     if (!tweets) {
       return res.status(404).json({ message: "tweets not available" });
     }
