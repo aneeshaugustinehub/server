@@ -79,7 +79,6 @@ export async function updateUser(req, res) {
       ...(bannerImageUrl && { bannerPic: bannerImageUrl }),
     };
     console.log(updateFields);
-    
 
     const updateUser = await User.findOneAndUpdate(
       { _id: req.params.id },
@@ -104,6 +103,24 @@ export async function deleteUser(req, res) {
     res.status(200).json({ message: "user deleted" });
   } catch (error) {
     console.error("error in deleteUser", error);
+    res.status(500).json({ message: "internal server error" });
+  }
+}
+export async function bookmarkTweet(req, res) {
+  console.log("bookmarkTweet");
+  try {
+    const userId = req.params.id;
+    const { tweetId } = req.body;
+    const update = {bookmarks:tweetId}
+      console.log("bookmarkTweet",update);
+    const addBookmark = await User.findByIdAndUpdate(
+      { _id: userId },
+      { $addToSet: update },
+      { new: true },
+    );
+    console.log("userId", userId, tweetId);
+  } catch (error) {
+    console.error("error in bookmarkTweet", error);
     res.status(500).json({ message: "internal server error" });
   }
 }

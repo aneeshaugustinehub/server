@@ -37,8 +37,8 @@ export async function getTweetByUser(req, res) {
   try {
     const id = req.params.id;
     const tweets = await Tweets.find({ postedBy: id }).sort({ createdAt: -1 });
-    if (!tweets) {
-      return res.status(404).json({ message: "tweets not available" });
+    if (tweets.length === 0) {
+      return res.status(200).json({ message: "tweets not available" });
     }
     return res.status(200).json({ tweets });
   } catch (error) {
@@ -160,7 +160,6 @@ const uploadsDir = path.join(process.cwd(), "assets/tweetsImage");
 
 export async function deleteTweet(req, res) {
   console.log("deleteTweet");
-
   try {
     const DeleteTweet = await Tweets.findByIdAndDelete(req.params.id);
 

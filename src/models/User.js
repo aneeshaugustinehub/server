@@ -5,6 +5,7 @@ const { Schema } = mongoose;
 const userSchema = new Schema(
   {
     createdAt: { type: Date, default: Date.now },
+    // username
     userId: { type: String, required: true, unique: true, trim: true },
     name: { type: String, required: true, trim: true },
     email: { type: String, required: true, unique: true, lowercase: true },
@@ -25,6 +26,9 @@ const userSchema = new Schema(
     noTweets: { type: Number, default: 0 },
     noFollowers: { type: Number, default: 0 },
     noFollowing: { type: Number, default: 0 },
+    followers: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    following: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    bookmarks: [{ type: Schema.Types.ObjectId, ref: "Tweets" }],
     roles: { type: [String], default: ["user"] },
     token: { type: String, required: true },
   },
