@@ -2,7 +2,8 @@ import express from "express";
 import {
   createUser,
   updateUser,
-  deleteUser,getUserById,
+  deleteUser,
+  getUserById,
   getUser,
   getUsers,
 } from "../controllers/userController.js";

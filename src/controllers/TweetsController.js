@@ -23,7 +23,7 @@ export async function getTweet(req, res) {
     const tweets = await Tweets.findById(id);
     return res.status(200).json({ tweets });
     console.log(res);
-    
+
     if (!tweets) {
       return res.status(404).json({ message: "tweets not available" });
     }
@@ -37,6 +37,19 @@ export async function getTweetByUser(req, res) {
   try {
     const id = req.params.id;
     const tweets = await Tweets.find({ postedBy: id }).sort({ createdAt: -1 });
+    if (!tweets) {
+      return res.status(404).json({ message: "tweets not available" });
+    }
+    return res.status(200).json({ tweets });
+  } catch (error) {
+    console.error("error in getTweet", error);
+    return res.status(500).json({ message: "internal server error" });
+  }
+}
+export async function getTweetReplay(req, res) {
+  try {
+    const id = req.params.id;
+    const tweets = await Tweets.find({ replayId: id }).sort({ createdAt: -1 });
     if (!tweets) {
       return res.status(404).json({ message: "tweets not available" });
     }
@@ -79,12 +92,45 @@ export async function createTweet(req, res) {
       imagePath: imageUrl,
     });
     await newTweet.save();
-    res.status(200).json(newTweet);
+    return res.status(200).json(newTweet);
   } catch (error) {
     console.error("error in createTweet", error);
     res.status(500).json({ message: "internal server error" });
   }
 }
+
+export async function createTweetReplay(req, res) {
+  console.log("createTweetReplay");
+  try {
+    const { postedBy, replayText, replayImage } = req.body;
+    console.log(postedBy, replayText, replayImage);
+    let imageUrl = "";
+    if (!postedBy) {
+      return res.status(400).json({ message: "userid is required" });
+    }
+    if (!replayText && !req.file) {
+      return res
+        .status(400)
+        .json({ message: "Tweet description or image is required." });
+    }
+    if (req.file) {
+      imageUrl = `${req.file.filename}`;
+    }
+    const newTweet = new Tweets({
+      replayId: req.params.id,
+      postedBy: postedBy,
+      description: replayText,
+      imagePath: imageUrl,
+    });
+    console.log(newTweet);
+    await newTweet.save();
+    return res.status(200).json(newTweet);
+  } catch (error) {
+    console.error("error in createTweet", error);
+    res.status(500).json({ message: "internal server error" });
+  }
+}
+
 export async function updateTweet(req, res) {
   console.log("updateTweet");
   try {

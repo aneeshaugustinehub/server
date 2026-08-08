@@ -22,6 +22,7 @@ app.use('/users', userRouter);
 app.use('/tweets', TweetsRouter);
 app.use('/profilesImage', express.static(path.join(process.cwd(), '/assets/profilesImage')));
 app.use('/tweetsImage', express.static(path.join(process.cwd(), '/assets/tweetsImage')));
+
 // app.use(cors({
 //   origin: 'http://localhost:5173',
 //   credentials: true // needed if you're sending cookies (e.g. JWT in httpOnly cookie) with requests
