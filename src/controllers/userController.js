@@ -111,14 +111,18 @@ export async function bookmarkTweet(req, res) {
   try {
     const userId = req.params.id;
     const { tweetId } = req.body;
-    const update = {bookmarks:tweetId}
-      console.log("bookmarkTweet",update);
+    const update = { bookmarks: tweetId };
+    console.log("bookmarkTweet", update);
+    const user = await User.findById(userId);
+    const isBookmarked = user.bookmarks.some((id) => id.toString() === tweetId);
     const addBookmark = await User.findByIdAndUpdate(
-      { _id: userId },
-      { $addToSet: update },
+      userId,
+      isBookmarked
+        ? { $pull: update }
+        : { $addToSet: update },
       { new: true },
-    );
-    console.log("userId", userId, tweetId);
+    ).select("bookmarks");
+    res.status(200).json(addBookmark);
   } catch (error) {
     console.error("error in bookmarkTweet", error);
     res.status(500).json({ message: "internal server error" });
