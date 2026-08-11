@@ -112,15 +112,12 @@ export async function bookmarkTweet(req, res) {
     const userId = req.params.id;
     const { tweetId } = req.body;
     const update = { bookmarks: tweetId };
-    console.log("bookmarkTweet", update);
     const user = await User.findById(userId);
     const isBookmarked = user.bookmarks.some((id) => id.toString() === tweetId);
     const addBookmark = await User.findByIdAndUpdate(
       userId,
-      isBookmarked
-        ? { $pull: update }
-        : { $addToSet: update },
-      { new: true },
+      isBookmarked ? { $pull: update } : { $addToSet: update },
+      { returnDocument: "after" },
     ).select("bookmarks");
     res.status(200).json(addBookmark);
   } catch (error) {
