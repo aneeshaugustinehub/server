@@ -106,14 +106,14 @@ export async function deleteUser(req, res) {
     res.status(500).json({ message: "internal server error" });
   }
 }
-export async function bookmarkTweet(req, res) {
-  console.log("bookmarkTweet");
+export async function bookmarkPosts(req, res) {
+  console.log("bookmark Post");
   try {
     const userId = req.params.id;
-    const { tweetId } = req.body;
-    const update = { bookmarks: tweetId };
+    const { PostId } = req.body;
+    const update = { bookmarks: PostId };
     const user = await User.findById(userId);
-    const isBookmarked = user.bookmarks.some((id) => id.toString() === tweetId);
+    const isBookmarked = user.bookmarks.some((id) => id.toString() === PostId);
     const addBookmark = await User.findByIdAndUpdate(
       userId,
       isBookmarked ? { $pull: update } : { $addToSet: update },
@@ -121,7 +121,7 @@ export async function bookmarkTweet(req, res) {
     ).select("bookmarks");
     res.status(200).json(addBookmark);
   } catch (error) {
-    console.error("error in bookmarkTweet", error);
+    console.error("error in bookmark Post", error);
     res.status(500).json({ message: "internal server error" });
   }
 }

@@ -4,7 +4,7 @@ import {
   updateUser,
   deleteUser,
   getUserById,
-  bookmarkTweet,
+  bookmarkPosts,
   getUser,
   getUsers,
 } from "../controllers/userController.js";
@@ -15,7 +15,7 @@ router.get("/:id", getUser);
 router.get("/", getUsers);
 router.get("/id/:id", getUserById);
 router.post("/", createUser);
-router.put("/bookmark/:id", bookmarkTweet);
+router.put("/bookmark/:id", bookmarkPosts);
 router.delete("/:id", deleteUser);
 router.put(
   "/:id",

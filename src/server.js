@@ -7,7 +7,7 @@ import { dirname } from "path";
 import { connectDB } from "./config/db.js";
 dotenv.config();
 import userRouter from "./Router/userRouter.js";
-import TweetsRouter from "./Router/TweetsRouter.js";
+import PostsRouter from "./Router/PostRouter.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -19,14 +19,14 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use("/users", userRouter);
-app.use("/tweets", TweetsRouter);
+app.use("/posts", PostsRouter);
 app.use(
   "/profilesImage",
   express.static(path.join(process.cwd(), "/assets/profilesImage")),
 );
 app.use(
-  "/tweetsImage",
-  express.static(path.join(process.cwd(), "/assets/tweetsImage")),
+  "/postsImage",
+  express.static(path.join(process.cwd(), "/assets/postsImage")),
 );
 
 // app.use(cors({

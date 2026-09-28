@@ -5,7 +5,7 @@ const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const folder = req.baseUrl.includes("users")
       ? "./assets/profilesImage/"
-      : "./assets/tweetsImage/";
+      : "./assets/postsImage/";
 
     cb(null, folder);
   },
