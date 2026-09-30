@@ -29,10 +29,10 @@ app.use(
   express.static(path.join(process.cwd(), "/assets/postsImage")),
 );
 
-// app.use(cors({
-//   origin: 'http://localhost:5173',
-//   credentials: true // needed if you're sending cookies (e.g. JWT in httpOnly cookie) with requests
-// }))
+app.use(cors({
+  origin: 'http://localhost:5173',
+  credentials: true // needed if you're sending cookies (e.g. JWT in httpOnly cookie) with requests
+}))
 
 connectDB().then(() => {
   app.listen(PORT, () => {

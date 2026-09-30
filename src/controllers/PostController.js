@@ -156,7 +156,7 @@ export async function updatePost(req, res) {
   }
 }
 
-const uploadsDir = path.join(process.cwd(), "assets/PostsImage");
+const uploadsDir = path.join(process.cwd(), "assets/postsImage");
 
 export async function deletePost(req, res) {
   console.log("deletePost");
