@@ -107,13 +107,12 @@ export async function deleteUser(req, res) {
   }
 }
 export async function bookmarkPosts(req, res) {
-  console.log("bookmark Post");
   try {
     const userId = req.params.id;
-    const { PostId } = req.body;
-    const update = { bookmarks: PostId };
+    const { postId } = req.body;
+    const update = { bookmarks: postId };
     const user = await User.findById(userId);
-    const isBookmarked = user.bookmarks.some((id) => id.toString() === PostId);
+    const isBookmarked = user.bookmarks.some((id) => id.toString() === postId);
     const addBookmark = await User.findByIdAndUpdate(
       userId,
       isBookmarked ? { $pull: update } : { $addToSet: update },
